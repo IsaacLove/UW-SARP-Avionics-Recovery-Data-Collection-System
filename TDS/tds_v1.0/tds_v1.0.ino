@@ -4,6 +4,7 @@
 //
 // Contributors:
 //  Isaac Love
+//  TARKAN AL-KAZILY
 //
 // The Telemetry Data System is the collection and processing system for
 //  gathering rocket data.  Attached systems are:
@@ -64,6 +65,22 @@ SoftwareSerial gpsSS(GPS_RX,GPS_TX);
 #define DATALOGGER_SDI 11 // MOSI
 #define DATALOGGER_SS  5  // Slave Select (CS)
 
+//SimpleSerial commands
+#define SET_CALLSIGN 'c'
+#define SEND_RAW_PACKET '!'
+#define SEND_LOCATION '@'
+#define SEND_APRS_MSG '#'
+#define SET_LATITUDE "lla"
+#define SET_LONGITUDE "llo"
+#define SHOW_CONFIG 'H'
+
+//MicroModem baud rate
+//Serial1 pins reserved for MicroModem: 19 (RX) 18 (TX)
+static long MMbaud = 9600;
+
+//Radio Call Sign
+static String callsign = "KI7AFR";
+
 ////////////////////////////////////////////////////////////////////////////////
 // Sensor Class Definitions
 ////////////////////////////////////////////////////////////////////////////////
@@ -88,11 +105,12 @@ void setup() {
   //pinMode(#, OUTPUT); //  D# (MISO)
   //pinMode(#, INPUT);  //  D# (SS)
   
-  Serial.begin(9600); // @TODO: This should be the micro modem baud rate;
+  //Serial1.begin(MMbaud); // @TODO: This should be the micro modem baud rate;
   
-  while (!Serial) // Wait for Serial to finish setting up.
-  {}
-  
+  //while (!Serial1) // Wait for Serial to finish setting up.
+  //{}
+
+  Serial.begin(9600); // Default serial communication with a computer over USB
   Serial.println("#RocketName: TM1: Serial/Radio Test");
   
   if (!bmp.begin()) // Start the BMP
@@ -195,5 +213,56 @@ boolean gpsTest ()
 //
 // Returns a float containing the average GPS Latitutde in degrees
 ////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
+// MicroModem Methods
+//
+////////////////////////////////////////////////////////////////////////////////
+
+void setCallSign(String call)
+{
+    String str = "";
+    str += SET_CALLSIGN;
+    str += call;
+
+    Serial1.print(str);
+}
+
+void displaySettings()
+{
+   String str = "";
+   str += SHOW_CONFIG;
+   
+   Serial1.print(str);
+}
+
+void sendMessage(String message)
+{
+    String str = "";
+    str += SEND_RAW_PACKET;
+    //str += SEND_APRS_MSG;
+    str += message;
+
+    Serial1.print(str);
+}
+
+void setLatitude(String latitude)
+{
+    String str = "";
+    str += SET_LATITUDE;
+    str += latitude;
+
+    Serial1.print(str);
+}
+
+void setLongitude(String longitude)
+{
+    String str = "";
+    str += SET_LONGITUDE;
+    str += longitude;
+
+    Serial1.print(str);
+}
+
 
 

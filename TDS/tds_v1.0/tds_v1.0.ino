@@ -41,7 +41,7 @@
 #define SAMPLES 100 // Indicates the number of samples that the sensors should take.
 #define FILE_NAME "data.txt" // File Name @TODO: make this dynamic (time from data logger perhaps).
 
-//  GPS, pins (Software Serial) Declares these:
+// GPS, pins (Software Serial) Declares these:
 #define GPS_RX 2 //Software Serial RX
 #define GPS_TX 3 //Software Serial TX
 SoftwareSerial gpsSS(GPS_RX,GPS_TX);

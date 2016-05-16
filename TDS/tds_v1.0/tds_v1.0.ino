@@ -52,7 +52,7 @@
 //pinMode(4, INPUT);  //  D# (SS)
 
 // Nosecone Temperature Sensor (DS18B20)
-#define TEMP_DQ 6 // Digital Pin 6
+#define TEMP_DQ 6 // @TODO: finalize pins
 
 ////////////////////////////////////////////////////////////////////////////////
 // SPI devices:

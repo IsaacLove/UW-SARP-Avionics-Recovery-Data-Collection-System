@@ -42,28 +42,32 @@
 #define SAMPLES 100 // Indicates the number of samples that the sensors should take.
 #define FILE_NAME "data.txt" // File Name @TODO: make this dynamic (time from data logger perhaps).
 
-// GPS, pins (Software Serial) Declares these:
-#define GPS_RX 2 //Software Serial RX
-#define GPS_TX 3 //Software Serial TX
-SoftwareSerial gpsSS(GPS_RX,GPS_TX);
-
-// Barometer / Altimeter, pins: @TODO: finalize pins
-#define BMP183_CLK 13 // Clock
-#define BMP183_SDO 12 // MISO
-#define BMP183_SDI 11 // MOSI
-#define BMP183_SS  4  // Slave Select (CS)
+// GPS uses Serial1
+#define GPS_BAUD 9600 // @TODO: finalize baud
 
 //  Accelerometer, pins: @TODO: finalize pins
 //pinMode(#, INPUT);  //  D# (SCK)
 //pinMode(#, INPUT);  //  D# (MISO)
 //pinMode(#, OUTPUT); //  D# (MOSI)
 //pinMode(4, INPUT);  //  D# (SS)
-//
+
+////////////////////////////////////////////////////////////////////////////////
+// SPI devices:
+////////////////////////////////////////////////////////////////////////////////
+
+#define SCK 52
+#define MISO 50
+#define MOSI 51
+
+// Barometer / Altimeter, pins: @TODO: finalize pins
+#define BMP183_SS  4  // Slave Select (CS)
+
 //  DataLogger, pins: @TODO: finalize pins
-#define DATALOGGER_CLK 13 // Clock
-#define DATALOGGER_SDO 12 // MISO
-#define DATALOGGER_SDI 11 // MOSI
 #define DATALOGGER_SS  5  // Slave Select (CS)
+
+////////////////////////////////////////////////////////////////////////////////
+// MicroModem:
+////////////////////////////////////////////////////////////////////////////////
 
 //SimpleSerial commands
 #define SET_CALLSIGN 'c'
@@ -75,8 +79,8 @@ SoftwareSerial gpsSS(GPS_RX,GPS_TX);
 #define SHOW_CONFIG 'H'
 
 //MicroModem baud rate
-//Serial1 pins reserved for MicroModem: 19 (RX) 18 (TX)
-static long MMbaud = 9600;
+//Serial2 pins reserved for MicroModem: 17 (RX) 16 (TX)
+#define MM_BAUD 9600
 
 //Radio Call Sign
 static String callsign = "KI7AFR";
@@ -98,21 +102,23 @@ TinyGPS gps;
 // confirmation message is sent to both the data logger and the radio.
 ////////////////////////////////////////////////////////////////////////////////
 void setup() {
-  
+
   //  Accelerometer, pins: @TODO: finalize pins
   //pinMode(#, INPUT);  //  D# (SCK)
   //pinMode(#, INPUT);  //  D# (MOSI)
   //pinMode(#, OUTPUT); //  D# (MISO)
   //pinMode(#, INPUT);  //  D# (SS)
-  
-  //Serial1.begin(MMbaud); // @TODO: This should be the micro modem baud rate;
-  
-  //while (!Serial1) // Wait for Serial to finish setting up.
+
+  //Serial2.begin(MM_BAUD); // @TODO: This should be the micro modem baud rate;
+
+  //while (!Serial2) // Wait for Serial to finish setting up.
   //{}
+
+ //Serial1.begin(GPS_BAUD); // @TODO: Get GPS working
 
   Serial.begin(9600); // Default serial communication with a computer over USB
   Serial.println("#RocketName: TM1: Serial/Radio Test");
-  
+
   if (!bmp.begin()) // Start the BMP
   {
     Serial.println("#RocketName: ERROR2: NO BMP DETECTED");
@@ -121,7 +127,7 @@ void setup() {
   {
     Serial.println("#RocketName: TM2: BMP Test");
   }
-  
+
   if (!SD.begin(DATALOGGER_SS))
   {
     Serial.println("#RocketName: ERROR3: NO DATALOGGER DETECTED");
@@ -130,7 +136,7 @@ void setup() {
   {
     Serial.println("#RocketName: TM3: DataLogger Test");
   }
-  
+
   gpsSS.begin(57600); // GPS Baud rate
   if (!gpsTest())
   {
@@ -140,7 +146,7 @@ void setup() {
   {
     Serial.println("#RocketName: TM4: GPS Test");
   }
-  
+
   Serial.println("TDS is Online");
 }
 
@@ -157,9 +163,9 @@ void loop() {
 void dataFlush(String packet)
 {
   Serial.println(packet);
-  
+
   File dataFile = SD.open(FILE_NAME, FILE_WRITE);
-  
+
   if (dataFile)
   {
     dataFile.println(packet);
@@ -180,18 +186,18 @@ float getTemp ()
 {
   float total = 0;
   int measures = 0;
-  
+
   for (int i = 0; i < SAMPLES; i++)
   {
     measures++;
     total += bmp.getTemperature();
   }
-  
+
   if (measures != 0)
   {
     return total / (float)measures;
   }
-  
+
   else // No data collected, return invalid measure.
   {
     return -999.0f;
@@ -217,6 +223,7 @@ boolean gpsTest ()
 ////////////////////////////////////////////////////////////////////////////////
 // MicroModem Methods
 //
+// Uses Serial2 to control the MicroModem
 ////////////////////////////////////////////////////////////////////////////////
 
 void setCallSign(String call)
@@ -225,15 +232,15 @@ void setCallSign(String call)
     str += SET_CALLSIGN;
     str += call;
 
-    Serial1.print(str);
+    Serial2.print(str);
 }
 
 void displaySettings()
 {
    String str = "";
    str += SHOW_CONFIG;
-   
-   Serial1.print(str);
+
+   Serial2.print(str);
 }
 
 void sendMessage(String message)
@@ -243,7 +250,7 @@ void sendMessage(String message)
     //str += SEND_APRS_MSG;
     str += message;
 
-    Serial1.print(str);
+    Serial2.print(str);
 }
 
 void setLatitude(String latitude)
@@ -252,7 +259,7 @@ void setLatitude(String latitude)
     str += SET_LATITUDE;
     str += latitude;
 
-    Serial1.print(str);
+    Serial2.print(str);
 }
 
 void setLongitude(String longitude)
@@ -261,8 +268,5 @@ void setLongitude(String longitude)
     str += SET_LONGITUDE;
     str += longitude;
 
-    Serial1.print(str);
+    Serial2.print(str);
 }
-
-
-

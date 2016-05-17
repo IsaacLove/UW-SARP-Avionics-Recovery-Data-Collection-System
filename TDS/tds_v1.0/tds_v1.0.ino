@@ -42,7 +42,7 @@
 #define FILE_NAME "data.txt" // File Name @TODO: make this dynamic (time from data logger perhaps).
 
 // GPS uses Serial1
-#define GPS_BAUD 9600 // @TODO: finalize baud
+#define GPS_BAUD 57600
 
 // Accelerometer
 #define GPS_X A2
@@ -170,7 +170,7 @@ void dataFlush(String packet)
   {
     Serial.println("ERROR101: CANNOT ACCESS FILE: " + (String)FILE_NAME);
   }
-  
+
   // @TODO: include call to MM sendMessage method
 }
 
@@ -214,7 +214,7 @@ boolean gpsTest ()
 ////////////////////////////////////////////////////////////////////////////////
 // getGPSLocation
 //
-// Returns a String containting three numbers delimited by a comma and a space: 
+// Returns a String containting three numbers delimited by a comma and a space:
 //  Latitude, Longitude, Age
 ////////////////////////////////////////////////////////////////////////////////
 String getGPSLocation ()
@@ -222,7 +222,7 @@ String getGPSLocation ()
   float lat;
   float lon;
   unsigned long age;
-  
+
   gps.f_get_position(&lat, &lon, &age);
   return (String)(lat) + ", " +  (String)(lon) + ", " + (String)(age);
 }

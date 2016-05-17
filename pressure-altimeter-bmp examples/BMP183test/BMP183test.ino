@@ -26,12 +26,12 @@ Adafruit_BMP183 bmp = Adafruit_BMP183(BMP183_CS);
     Arduino setup function (automatically called at startup)
 */
 /**************************************************************************/
-void setup(void) 
+void setup(void)
 {
   Serial.begin(9600);
   delay(1000);
   Serial.println("BMP183 Pressure Sensor Test"); Serial.println("");
-  
+
   /* Initialise the sensor */
   if(!bmp.begin())
   {
@@ -47,7 +47,7 @@ void setup(void)
     should go here)
 */
 /**************************************************************************/
-void loop(void) 
+void loop(void)
 {
     /* Display atmospheric pressue in Pascals */
     Serial.print("Pressure:    ");
@@ -62,7 +62,7 @@ void loop(void)
     Serial.print("Temperature: ");
     Serial.print(temperature);
     Serial.println(" C");
-    
+
     /* Calculating altitude with reasonable accuracy requires pressure    *
      * sea level pressure for your position at the moment the data is     *
      * converted. If you don't have these values, a 'generic' value of    *
@@ -76,17 +76,17 @@ void loop(void)
      *                                                                    *
      * For example, for Paris, France you can check the current mean      *
      * pressure and sea level at: http://bit.ly/16Au8ol                   */
-     
+
 
     /* Then convert the atmospheric pressure, SLP and temp to altitude    */
     /* Update this next line with the current SLP for better results      */
     float seaLevelPressure = SENSORS_PRESSURE_SEALEVELHPA; // should be ~1000
-    Serial.print("Sea level pressure: "); 
+    Serial.print("Sea level pressure: ");
     Serial.print(SENSORS_PRESSURE_SEALEVELHPA);
     Serial.println(" millibar/hPa");
-    
-    Serial.print("Altitude:    "); 
-    Serial.print(bmp.getAltitude(seaLevelPressure)); 
+
+    Serial.print("Altitude:    ");
+    Serial.print(bmp.getAltitude(seaLevelPressure));
     Serial.println(" m");
     Serial.println("");
 

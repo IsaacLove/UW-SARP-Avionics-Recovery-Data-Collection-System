@@ -41,6 +41,8 @@
 #define SAMPLES 100 // Indicates the number of samples that the sensors should take.
 #define FILE_NAME "data.txt" // File Name @TODO: make this dynamic (time from data logger perhaps).
 #define SEA_LEVEL_PRESSURE 1013.25
+#define TICKS_PER_G 25.0f // @TODO: Make these calibrated somehow
+#define ZERO_G_OFFSET 325.0f
 
 // GPS uses Serial1
 #define GPS_BAUD 57600
@@ -147,7 +149,15 @@ void setup() {
 }
 
 void loop() {
-
+    unsigned long milli = millis();
+    smartdelay(1000);
+    String accelerometer_data = getAccelData();
+    String barometer_data = getBaromData();
+    String gps_data = getGPSLocation() + ", " + getGPSSpeed();
+    //Serial.println("Millis: " + milli);
+    Serial.println(accelerometer_data);
+    Serial.println(barometer_data);
+    Serial.println(gps_data);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -173,11 +183,11 @@ void logData(String packet)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// getTemp
+// getTemperature
 //
 // Returns a float containing Temperature in C.
 ////////////////////////////////////////////////////////////////////////////////
-float getTemp ()
+float getTemperature()
 {
     return bmp.getTemperature();
 }
@@ -187,7 +197,7 @@ float getTemp ()
 //
 // Returns a float containing pressure in Pascals
 ////////////////////////////////////////////////////////////////////////////////
-float getPressure ()
+float getPressure()
 {
     return bmp.getPressure();
 }
@@ -197,9 +207,15 @@ float getPressure ()
 //
 // Returns a float containing altitude in meters
 ////////////////////////////////////////////////////////////////////////////////
-float getAltitude ()
+float getAltitude()
 {
     return bmp.getAltitude(SEA_LEVEL_PRESSURE);
+}
+
+String getBaromData()
+{
+    return "Temp: " + (String)(getTemperature()) + ", " + "Pascal: " + (String)(getPressure())
+        + ", " + "Alt: " + (String)(getAltitude());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -239,7 +255,18 @@ int getRawAccelZ ()
 ////////////////////////////////////////////////////////////////////////////////
 float getAccelGs (int raw)
 {
-    return (((float)raw) / 1023.0f - 325.0f) / 0.25f; // Sanity Check please
+    // @TODO make these constants
+    return (((float)raw) - ZERO_G_OFFSET) / TICKS_PER_G; // Sanity Check please
+}
+
+String getAccelData()
+{
+    float x_accel = getAccelGs(getRawAccelX());
+    float y_accel = getAccelGs(getRawAccelY());
+    float z_accel = getAccelGs(getRawAccelZ());
+
+    return "X_Accel: " + (String)(x_accel) + ", " + "Y_Accel: " + (String)(y_accel)
+        + ", " + "Z_Accel: " + (String)(z_accel);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -265,7 +292,11 @@ String getGPSLocation ()
     unsigned long age;
 
     gps.f_get_position(&lat, &lon, &age);
-    return (String)(lat) + ", " +  (String)(lon) + ", " + (String)(age);
+    Serial.println("----" + (String)lat);
+    Serial.println("----" + (String)lon);
+    Serial.println("----" + (String)age);
+    return "Lat: " + (String)(lat) + ", " + "Long: " + (String)(lon) + ", " +
+        "Age: " + (String)(age);
 }
 
 String getGPSSpeed()
@@ -274,7 +305,7 @@ String getGPSSpeed()
 
     speed = gps.f_speed_mph();
 
-    return (String) speed;
+    return "MPH: " + (String)(speed);
 }
 
 String getGPSDateTime()
@@ -287,6 +318,17 @@ String getGPSDateTime()
 
     return (String)(date) + ", " + (String)(time) + ", " + (String)(age);
 }
+
+static void smartdelay(unsigned long ms)
+{
+  unsigned long start = millis();
+  do
+  {
+    while (Serial1.available())
+      gps.encode(Serial1.read());
+  } while (millis() - start < ms);
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // MicroModem Methods
 //

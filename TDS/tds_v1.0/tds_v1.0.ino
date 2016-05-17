@@ -40,8 +40,9 @@
 
 #define SAMPLES 100 // Indicates the number of samples that the sensors should take.
 #define FILE_NAME "data.txt" // File Name @TODO: make this dynamic (time from data logger perhaps).
+#define SEA_LEVEL_PRESSURE 1013.25
 
-// GPS uses Serial1 at 57600
+// GPS uses Serial1
 #define GPS_BAUD 57600
 
 // Accelerometer
@@ -151,11 +152,11 @@ void loop() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// dataFlush
+// logData
 //
 // Outputs the String packet to both the data logger and the radio.
 ////////////////////////////////////////////////////////////////////////////////
-void dataFlush(String packet)
+void logData(String packet)
 {
   Serial.println(packet);
 
@@ -170,45 +171,78 @@ void dataFlush(String packet)
   {
     Serial.println("ERROR101: CANNOT ACCESS FILE: " + (String)FILE_NAME);
   }
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // getTemp
 //
-// Returns a float containing the average Temperature in C.
+// Returns a float containing Temperature in C.
 ////////////////////////////////////////////////////////////////////////////////
 float getTemp ()
 {
-  float total = 0;
-  int measures = 0;
-
-  for (int i = 0; i < SAMPLES; i++)
-  {
-    measures++;
-    total += bmp.getTemperature();
-  }
-
-  if (measures != 0)
-  {
-    return total / (float)measures;
-  }
-
-  else // No data collected, return invalid measure.
-  {
-    return -999.0f;
-  }
+  return bmp.getTemperature();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// getRawAccelXYZ
+// getPressure
 //
-// Returns X Y Z data as a string delimeted by ", "
+// Returns a float containing pressure in Pascals
 ////////////////////////////////////////////////////////////////////////////////
-String getRawAccelXYZ ()
+float getPressure ()
 {
-  return (String)(analogRead(ACCEL_X)) + ", " + (String)(analogRead(ACCEL_Y)) + ", " + (String)(analogRead(ACCEL_Z));
+  return bmp.getPressure();
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// getAltitude
+//
+// Returns a float containing altitude in meters
+////////////////////////////////////////////////////////////////////////////////
+float getAltitude ()
+{
+  return bmp.getAltitude(SEA_LEVEL_PRESSURE);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// getRawAccelX
+//
+// Returns X value as an int
+////////////////////////////////////////////////////////////////////////////////
+int getRawAccelX ()
+{
+  return analogRead(ACCEL_X);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// getRawAccelY
+//
+// Returns Y value as an int
+////////////////////////////////////////////////////////////////////////////////
+int getRawAccelY ()
+{
+  return analogRead(ACCEL_Y);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// getRawAccelZ
+//
+// Returns Z value as an int
+////////////////////////////////////////////////////////////////////////////////
+int getRawAccelZ ()
+{
+  return analogRead(ACCEL_Z);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// getAccelGs
+//
+// Takes raw Accelerometer data and outputs Accelerometer Gs as a float.
+////////////////////////////////////////////////////////////////////////////////
+float getAccelGs (int raw)
+{
+  return (((float)raw) / 1023.0f - 325.0f) / 0.25f; // Sanity Check please
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // gpsTest
 //

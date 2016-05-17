@@ -10,8 +10,8 @@ TinyGPS gps;
 void setup()
 {
   Serial.begin(115200);
-  Serial2.begin(115200); // I believe this is the GPS baud rate.  It's poSerial2ible its different, as these GPS have configurable baud rate.
-  
+  Serial2.begin(115200); // I believe this is the GPS baud rate.  It's possible its different, as these GPS have configurable baud rate.
+
   Serial.print("Simple TinyGPS library v. "); Serial.println(TinyGPS::library_version());
   Serial.println("by Mikal Hart");
   Serial.println();
@@ -49,7 +49,7 @@ void loop()
     Serial.print(" PREC=");
     Serial.print(gps.hdop() == TinyGPS::GPS_INVALID_HDOP ? 0 : gps.hdop());
   }
-  
+
   gps.stats(&chars, &sentences, &failed);
   Serial.print(" CHARS=");
   Serial.print(chars);

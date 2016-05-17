@@ -45,9 +45,9 @@
 #define GPS_BAUD 57600
 
 // Accelerometer
-#define GPS_X A2
-#define GPS_y A1
-#define GPS_Z A0
+#define ACCEL_X A2
+#define ACCEL_Y A1
+#define ACCEL_Z A0
 
 // Nosecone Temperature Sensor (DS18B20)
 #define TEMP_DQ 6 // @TODO: finalize pins
@@ -61,10 +61,10 @@
 #define MOSI 51
 
 // Barometer / Altimeter, pins: @TODO: finalize pins
-#define BMP183_SS  4  // Slave Select (CS)
+#define BMP183_SS  2  // Slave Select (CS)
 
 //  DataLogger, pins: @TODO: finalize pins
-#define DATALOGGER_SS  5  // Slave Select (CS)
+#define DATALOGGER_SS  3  // Slave Select (CS)
 
 ////////////////////////////////////////////////////////////////////////////////
 // MicroModem:
@@ -91,7 +91,7 @@ static String callsign = "KI7AFR";
 ////////////////////////////////////////////////////////////////////////////////
 
 // Barometer / Altimeter:
-Adafruit_BMP183 bmp = Adafruit_BMP183(SCK, MISO, MOSI, BMP183_SS);
+Adafruit_BMP183 bmp = Adafruit_BMP183(BMP183_SS);
 
 // GPS:
 TinyGPS gps;
@@ -132,7 +132,7 @@ void setup() {
     Serial.println("#RocketName: ERROR3: NO DATALOGGER DETECTED");
   }
 
-  Serial1.begin(57600); // GPS Baud rate
+  Serial1.begin(GPS_BAUD); // GPS Baud rate
   if (gpsTest())
   {
     Serial.println("#RocketName: TM4: GPS Test");
@@ -201,6 +201,15 @@ float getTemp ()
   }
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// getRawAccelXYZ
+//
+// Returns X Y Z data as a string delimeted by ", "
+////////////////////////////////////////////////////////////////////////////////
+String getRawAccelXYZ ()
+{
+  return (String)(analogRead(ACCEL_X)) + ", " + (String)(analogRead(ACCEL_Y)) + ", " + (String)(analogRead(ACCEL_Z));
+}
 ////////////////////////////////////////////////////////////////////////////////
 // gpsTest
 //

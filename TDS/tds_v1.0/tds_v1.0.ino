@@ -30,7 +30,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 #include <SPI.h>
 #include <SD.h>
-#include <SoftwareSerial.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BMP183.h>
 #include <TinyGPS.h>
@@ -45,11 +44,10 @@
 // GPS uses Serial1
 #define GPS_BAUD 9600 // @TODO: finalize baud
 
-//  Accelerometer, pins: @TODO: finalize pins
-//pinMode(#, INPUT);  //  D# (SCK)
-//pinMode(#, INPUT);  //  D# (MISO)
-//pinMode(#, OUTPUT); //  D# (MOSI)
-//pinMode(4, INPUT);  //  D# (SS)
+// Accelerometer
+#define GPS_X A2
+#define GPS_y A1
+#define GPS_Z A0
 
 // Nosecone Temperature Sensor (DS18B20)
 #define TEMP_DQ 6 // @TODO: finalize pins
@@ -93,7 +91,7 @@ static String callsign = "KI7AFR";
 ////////////////////////////////////////////////////////////////////////////////
 
 // Barometer / Altimeter:
-Adafruit_BMP183 bmp = Adafruit_BMP183(BMP183_CLK, BMP183_SDO, BMP183_SDI, BMP183_SS);
+Adafruit_BMP183 bmp = Adafruit_BMP183(SCK, MISO, MOSI, BMP183_SS);
 
 // GPS:
 TinyGPS gps;
@@ -106,12 +104,6 @@ TinyGPS gps;
 ////////////////////////////////////////////////////////////////////////////////
 void setup() {
 
-  //  Accelerometer, pins: @TODO: finalize pins
-  //pinMode(#, INPUT);  //  D# (SCK)
-  //pinMode(#, INPUT);  //  D# (MOSI)
-  //pinMode(#, OUTPUT); //  D# (MISO)
-  //pinMode(#, INPUT);  //  D# (SS)
-
   //Serial2.begin(MM_BAUD); // @TODO: This should be the micro modem baud rate;
 
   //while (!Serial2) // Wait for Serial to finish setting up.
@@ -122,32 +114,32 @@ void setup() {
   Serial.begin(9600); // Default serial communication with a computer over USB
   Serial.println("#RocketName: TM1: Serial/Radio Test");
 
-  if (!bmp.begin()) // Start the BMP
-  {
-    Serial.println("#RocketName: ERROR2: NO BMP DETECTED");
-  }
-  else
+  if (bmp.begin()) // Start the BMP
   {
     Serial.println("#RocketName: TM2: BMP Test");
   }
-
-  if (!SD.begin(DATALOGGER_SS))
-  {
-    Serial.println("#RocketName: ERROR3: NO DATALOGGER DETECTED");
-  }
   else
+  {
+    Serial.println("#RocketName: ERROR2: NO BMP DETECTED");
+  }
+
+  if (SD.begin(DATALOGGER_SS))
   {
     Serial.println("#RocketName: TM3: DataLogger Test");
   }
-
-  gpsSS.begin(57600); // GPS Baud rate
-  if (!gpsTest())
+  else
   {
-    Serial.println("#RocketName: ERROR4: NO GPS DETECTED");
+    Serial.println("#RocketName: ERROR3: NO DATALOGGER DETECTED");
+  }
+
+  Serial1.begin(57600); // GPS Baud rate
+  if (gpsTest())
+  {
+    Serial.println("#RocketName: TM4: GPS Test");
   }
   else
   {
-    Serial.println("#RocketName: TM4: GPS Test");
+    Serial.println("#RocketName: ERROR4: NO GPS DETECTED");
   }
 
   Serial.println("TDS is Online");
@@ -178,6 +170,8 @@ void dataFlush(String packet)
   {
     Serial.println("ERROR101: CANNOT ACCESS FILE: " + (String)FILE_NAME);
   }
+  
+  // @TODO: include call to MM sendMessage method
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -218,10 +212,20 @@ boolean gpsTest ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// getGPSLat
+// getGPSLocation
 //
-// Returns a float containing the average GPS Latitutde in degrees
+// Returns a String containting three numbers delimited by a comma and a space: 
+//  Latitude, Longitude, Age
 ////////////////////////////////////////////////////////////////////////////////
+String getGPSLocation ()
+{
+  float lat;
+  float lon;
+  unsigned long age;
+  
+  gps.f_get_position(&lat, &lon, &age);
+  return (String)(lat) + ", " +  (String)(lon) + ", " + (String)(age);
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // MicroModem Methods

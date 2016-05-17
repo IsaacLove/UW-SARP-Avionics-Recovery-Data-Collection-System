@@ -18,7 +18,8 @@
 // initialize with hardware SPI
 //Adafruit_BMP183 bmp = Adafruit_BMP183(BMP183_CS);
 // or initialize with software SPI and use any 4 pins
-Adafruit_BMP183 bmp = Adafruit_BMP183(BMP183_CLK, BMP183_SDO, BMP183_SDI, BMP183_CS);
+//Adafruit_BMP183 bmp = Adafruit_BMP183(BMP183_CLK, BMP183_SDO, BMP183_SDI, BMP183_CS);
+Adafruit_BMP183 bmp = Adafruit_BMP183(BMP183_CS);
 
 /**************************************************************************/
 /*

@@ -3,12 +3,11 @@
 #include <TinyGPS.h>
 
 /* This sample code demonstrates the normal use of a TinyGPS object.
-   It requires the use of SoftwareSerial, and assumes that you have a
+   It requires the use of SoftwareSerial, and aSerial1umes that you have a
    4800-baud serial GPS device hooked up on pins 4(rx) and 3(tx).
 */
 
 TinyGPS gps;
-SoftwareSerial ss(4, 3);
 
 static void smartdelay(unsigned long ms);
 static void print_float(float val, float invalid, int len, int prec);
@@ -19,6 +18,7 @@ static void print_str(const char *str, int len);
 void setup()
 {
   Serial.begin(115200);
+  Serial1.begin(57600); // This is the GPS baud rate.
   
   Serial.print("Testing TinyGPS library v. "); Serial.println(TinyGPS::library_version());
   Serial.println("by Mikal Hart");
@@ -26,8 +26,6 @@ void setup()
   Serial.println("Sats HDOP Latitude  Longitude  Fix  Date       Time     Date Alt    Course Speed Card  Distance Course Card  Chars Sentences Checksum");
   Serial.println("          (deg)     (deg)      Age                      Age  (m)    --- from GPS ----  ---- to London  ----  RX    RX        Fail");
   Serial.println("-------------------------------------------------------------------------------------------------------------------------------------");
-
-  ss.begin(57600); //57600
 }
 
 void loop()
@@ -66,8 +64,8 @@ static void smartdelay(unsigned long ms)
   unsigned long start = millis();
   do 
   {
-    while (ss.available())
-      gps.encode(ss.read());
+    while (Serial1.available())
+      gps.encode(Serial1.read());
   } while (millis() - start < ms);
 }
 

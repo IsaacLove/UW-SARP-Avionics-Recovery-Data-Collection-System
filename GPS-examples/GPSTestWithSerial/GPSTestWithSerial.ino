@@ -9,8 +9,8 @@ TinyGPS gps;
 
 void setup()
 {
-  Serial.begin(115200);
-  Serial2.begin(115200); // I believe this is the GPS baud rate.  It's possible its different, as these GPS have configurable baud rate.
+  Serial.begin(9600);
+  Serial1.begin(57600); // This is the GPS baud rate
 
   Serial.print("Simple TinyGPS library v. "); Serial.println(TinyGPS::library_version());
   Serial.println("by Mikal Hart");
@@ -26,10 +26,10 @@ void loop()
   // For one second we parse GPS data and report some key values
   for (unsigned long start = millis(); millis() - start < 1000;)
   {
-    while (Serial2.available())
+    while (Serial1.available())
     {
-      char c = Serial2.read();
-      // Serial.write(c); // uncomment this line if you want to see the GPS data flowing
+      char c = Serial1.read();
+       Serial.write(c); // uncomment this line if you want to see the GPS data flowing
       if (gps.encode(c)) // Did a new valid sentence come in?
         newData = true;
     }

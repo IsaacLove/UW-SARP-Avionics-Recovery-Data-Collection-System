@@ -147,6 +147,10 @@ void setup() {
 }
 
 void loop() {
+    unsigned long millis = millis();
+    String accelerometer_data = getAccelData();
+    String barometer_data = getBaromData();
+    String data;
 
 }
 
@@ -173,11 +177,11 @@ void logData(String packet)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// getTemp
+// getTemperature
 //
 // Returns a float containing Temperature in C.
 ////////////////////////////////////////////////////////////////////////////////
-float getTemp ()
+float getTemperature()
 {
     return bmp.getTemperature();
 }
@@ -187,7 +191,7 @@ float getTemp ()
 //
 // Returns a float containing pressure in Pascals
 ////////////////////////////////////////////////////////////////////////////////
-float getPressure ()
+float getPressure()
 {
     return bmp.getPressure();
 }
@@ -197,9 +201,15 @@ float getPressure ()
 //
 // Returns a float containing altitude in meters
 ////////////////////////////////////////////////////////////////////////////////
-float getAltitude ()
+float getAltitude()
 {
     return bmp.getAltitude(SEA_LEVEL_PRESSURE);
+}
+
+String getBaromData()
+{
+    return "Temp: " + (String)(getTemperature()) + ", " + "Pascal: " + (String)(getPressure())
+        + ", " + "Alt: " + (String)(getAltitude());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -239,7 +249,18 @@ int getRawAccelZ ()
 ////////////////////////////////////////////////////////////////////////////////
 float getAccelGs (int raw)
 {
+    // @TODO make these constants
     return (((float)raw) / 1023.0f - 325.0f) / 0.25f; // Sanity Check please
+}
+
+String getAccelData()
+{
+    float x_accel = getAccelGs(getRawAccelX());
+    float y_accel = getAccelGs(getRawAccelY());
+    float z_accel = getAccelGs(getRawAccelZ());
+
+    return "X_Accel: " + (String)(x_accel) + ", " + "Y_Accel: " + (String)(y_accel)
+        + ", " + "Z_Accel: " + (String)(z_accel);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

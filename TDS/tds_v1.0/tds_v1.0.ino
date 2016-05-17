@@ -42,7 +42,7 @@
 #define FILE_NAME "data.txt" // File Name @TODO: make this dynamic (time from data logger perhaps).
 
 // GPS uses Serial1
-#define GPS_BAUD 9600
+#define GPS_BAUD 57600
 
 // Accelerometer
 #define GPS_X A2

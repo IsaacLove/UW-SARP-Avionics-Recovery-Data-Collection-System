@@ -22,8 +22,8 @@ void readInputs()
   float yVolts = analogRead(Y_PIN);
   float zVolts = analogRead(Z_PIN);
   
-  Serial.println("x: " + (String)(xVolts / 1023.0 * 16.0));
-  Serial.println("y: " + (String)(yVolts / 1023.0 * 16.0));
-  Serial.println("z: " + (String)(zVolts / 1023.0 * 16.0));
+  Serial.println("x: " + (String)(xVolts)); // / 1023.0 * 16.0));
+  Serial.println("y: " + (String)(yVolts)); // / 1023.0 * 16.0));
+  Serial.println("z: " + (String)(zVolts)); // / 1023.0 * 16.0));
   Serial.println();
 }

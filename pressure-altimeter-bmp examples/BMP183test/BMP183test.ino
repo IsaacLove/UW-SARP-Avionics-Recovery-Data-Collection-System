@@ -9,8 +9,8 @@
 
 // You can also use software SPI and define your own pins!
 #define BMP183_CLK  52
-#define BMP183_SDO  51  // AKA MISO
-#define BMP183_SDI  50  // AKA MOSI
+#define BMP183_SDO  50  // AKA MISO
+#define BMP183_SDI  51  // AKA MOSI
 
 // You'll also need a chip-select pin, use any pin!
 #define BMP183_CS 2
@@ -18,7 +18,8 @@
 // initialize with hardware SPI
 //Adafruit_BMP183 bmp = Adafruit_BMP183(BMP183_CS);
 // or initialize with software SPI and use any 4 pins
-Adafruit_BMP183 bmp = Adafruit_BMP183(BMP183_CLK, BMP183_SDO, BMP183_SDI, BMP183_CS);
+//Adafruit_BMP183 bmp = Adafruit_BMP183(BMP183_CLK, BMP183_SDO, BMP183_SDI, BMP183_CS);
+Adafruit_BMP183 bmp = Adafruit_BMP183(BMP183_CS);
 
 /**************************************************************************/
 /*

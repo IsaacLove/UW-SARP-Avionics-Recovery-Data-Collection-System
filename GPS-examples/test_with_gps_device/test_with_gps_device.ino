@@ -15,7 +15,7 @@ static void print_str(const char *str, int len);
 
 void setup()
 {
-  Serial.begin(115200);
+  Serial.begin(9600);
   Serial1.begin(57600); // This is the GPS baud rate.
 
   Serial.print("Testing TinyGPS library v. "); Serial.println(TinyGPS::library_version());

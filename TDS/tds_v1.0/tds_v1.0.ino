@@ -269,6 +269,25 @@ String getGPSLocation ()
   return (String)(lat) + ", " +  (String)(lon) + ", " + (String)(age);
 }
 
+String getGPSSpeed()
+{
+    float speed;
+
+    speed = gps.f_speed_mph();
+
+    return (String) speed;
+}
+
+String getGPSDateTime()
+{
+    unsigned long date;
+    unsigned long time;
+    unsigned long age;
+
+    gps.get_datetime(&date, &time, &age);
+
+    return (String)(date) + ", " + (String)(time) + ", " + (String)(age);
+}
 ////////////////////////////////////////////////////////////////////////////////
 // MicroModem Methods
 //

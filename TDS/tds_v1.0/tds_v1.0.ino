@@ -41,7 +41,7 @@
 #define SAMPLES 100 // Indicates the number of samples that the sensors should take.
 #define FILE_NAME "data.txt" // File Name @TODO: make this dynamic (time from data logger perhaps).
 
-// GPS uses Serial1
+// GPS uses Serial1 at 57600
 #define GPS_BAUD 57600
 
 // Accelerometer
@@ -228,8 +228,8 @@ boolean gpsTest ()
 ////////////////////////////////////////////////////////////////////////////////
 String getGPSLocation ()
 {
-  float lat;
-  float lon;
+  unsigned float lat;
+  unsigned float lon;
   unsigned long age;
 
   gps.f_get_position(&lat, &lon, &age);

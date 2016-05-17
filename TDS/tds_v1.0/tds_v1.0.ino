@@ -105,50 +105,49 @@ TinyGPS gps;
 ////////////////////////////////////////////////////////////////////////////////
 void setup() {
 
-  //Serial2.begin(MM_BAUD); // @TODO: This should be the micro modem baud rate;
+    //Serial2.begin(MM_BAUD); // @TODO: This should be the micro modem baud rate;
 
-  //while (!Serial2) // Wait for Serial to finish setting up.
-  //{}
+    //while (!Serial2) // Wait for Serial to finish setting up.
+    //{}
 
- //Serial1.begin(GPS_BAUD); // @TODO: Get GPS working
+    //Serial1.begin(GPS_BAUD); // @TODO: Get GPS working
 
-  Serial.begin(9600); // Default serial communication with a computer over USB
-  Serial.println("#RocketName: TM1: Serial/Radio Test");
+    Serial.begin(9600); // Default serial communication with a computer over USB
+    Serial.println("#RocketName: TM1: Serial/Radio Test");
 
-  if (bmp.begin()) // Start the BMP
-  {
-    Serial.println("#RocketName: TM2: BMP Test");
-  }
-  else
-  {
-    Serial.println("#RocketName: ERROR2: NO BMP DETECTED");
-  }
+    if (bmp.begin()) // Start the BMP
+    {
+        Serial.println("#RocketName: TM2: BMP Test");
+    }
+    else
+    {
+        Serial.println("#RocketName: ERROR2: NO BMP DETECTED");
+    }
 
-  if (SD.begin(DATALOGGER_SS))
-  {
-    Serial.println("#RocketName: TM3: DataLogger Test");
-  }
-  else
-  {
-    Serial.println("#RocketName: ERROR3: NO DATALOGGER DETECTED");
-  }
+    if (SD.begin(DATALOGGER_SS))
+    {
+        Serial.println("#RocketName: TM3: DataLogger Test");
+    }
+    else
+    {
+        Serial.println("#RocketName: ERROR3: NO DATALOGGER DETECTED");
+    }
 
-  Serial1.begin(GPS_BAUD); // GPS Baud rate
-  if (gpsTest())
-  {
-    Serial.println("#RocketName: TM4: GPS Test");
-  }
-  else
-  {
-    Serial.println("#RocketName: ERROR4: NO GPS DETECTED");
-  }
+    Serial1.begin(GPS_BAUD); // GPS Baud rate
+    if (gpsTest())
+    {
+        Serial.println("#RocketName: TM4: GPS Test");
+    }
+    else
+    {
+        Serial.println("#RocketName: ERROR4: NO GPS DETECTED");
+    }
 
-  Serial.println("TDS is Online");
+    Serial.println("TDS is Online");
 }
 
 void loop() {
-  //delay(1000);
-  Serial.println(getTemp());
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -158,19 +157,19 @@ void loop() {
 ////////////////////////////////////////////////////////////////////////////////
 void logData(String packet)
 {
-  Serial.println(packet);
+    Serial.println(packet);
 
-  File dataFile = SD.open(FILE_NAME, FILE_WRITE);
+    File dataFile = SD.open(FILE_NAME, FILE_WRITE);
 
-  if (dataFile)
-  {
-    dataFile.println(packet);
-    dataFile.close();
-  }
-  else
-  {
-    Serial.println("ERROR101: CANNOT ACCESS FILE: " + (String)FILE_NAME);
-  }
+    if (dataFile)
+    {
+        dataFile.println(packet);
+        dataFile.close();
+    }
+    else
+    {
+        Serial.println("ERROR101: CANNOT ACCESS FILE: " + (String)FILE_NAME);
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -180,7 +179,7 @@ void logData(String packet)
 ////////////////////////////////////////////////////////////////////////////////
 float getTemp ()
 {
-  return bmp.getTemperature();
+    return bmp.getTemperature();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -190,7 +189,7 @@ float getTemp ()
 ////////////////////////////////////////////////////////////////////////////////
 float getPressure ()
 {
-  return bmp.getPressure();
+    return bmp.getPressure();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -200,7 +199,7 @@ float getPressure ()
 ////////////////////////////////////////////////////////////////////////////////
 float getAltitude ()
 {
-  return bmp.getAltitude(SEA_LEVEL_PRESSURE);
+    return bmp.getAltitude(SEA_LEVEL_PRESSURE);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -210,7 +209,7 @@ float getAltitude ()
 ////////////////////////////////////////////////////////////////////////////////
 int getRawAccelX ()
 {
-  return analogRead(ACCEL_X);
+    return analogRead(ACCEL_X);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -220,7 +219,7 @@ int getRawAccelX ()
 ////////////////////////////////////////////////////////////////////////////////
 int getRawAccelY ()
 {
-  return analogRead(ACCEL_Y);
+    return analogRead(ACCEL_Y);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -230,7 +229,7 @@ int getRawAccelY ()
 ////////////////////////////////////////////////////////////////////////////////
 int getRawAccelZ ()
 {
-  return analogRead(ACCEL_Z);
+    return analogRead(ACCEL_Z);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -240,7 +239,7 @@ int getRawAccelZ ()
 ////////////////////////////////////////////////////////////////////////////////
 float getAccelGs (int raw)
 {
-  return (((float)raw) / 1023.0f - 325.0f) / 0.25f; // Sanity Check please
+    return (((float)raw) / 1023.0f - 325.0f) / 0.25f; // Sanity Check please
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -250,7 +249,7 @@ float getAccelGs (int raw)
 ////////////////////////////////////////////////////////////////////////////////
 boolean gpsTest ()
 {
-  return true; // @TODO: test GPS packets for checksum to pass test, or other
+    return true; // @TODO: test GPS packets for checksum to pass test, or other
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -261,12 +260,12 @@ boolean gpsTest ()
 ////////////////////////////////////////////////////////////////////////////////
 String getGPSLocation ()
 {
-  float lat;
-  float lon;
-  unsigned long age;
+    float lat;
+    float lon;
+    unsigned long age;
 
-  gps.f_get_position(&lat, &lon, &age);
-  return (String)(lat) + ", " +  (String)(lon) + ", " + (String)(age);
+    gps.f_get_position(&lat, &lon, &age);
+    return (String)(lat) + ", " +  (String)(lon) + ", " + (String)(age);
 }
 
 String getGPSSpeed()
@@ -305,10 +304,10 @@ void setCallSign(String call)
 
 void displaySettings()
 {
-   String str = "";
-   str += SHOW_CONFIG;
+    String str = "";
+    str += SHOW_CONFIG;
 
-   Serial2.print(str);
+    Serial2.print(str);
 }
 
 void sendMessage(String message)

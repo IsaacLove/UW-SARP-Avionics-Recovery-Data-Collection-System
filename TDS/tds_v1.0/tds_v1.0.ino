@@ -41,10 +41,12 @@
 #define SAMPLES 100 // Indicates the number of samples that the sensors should take.
 #define BASE_NAME "ORDATA" // File Name @TODO: make this dynamic (time from data logger perhaps).
 #define EXTENSION ".txt"
-#define SEA_LEVEL_PRESSURE 1013.25
-#define TICKS_PER_G 25.0f // @TODO: Make these calibrated somehow
-#define ZERO_G_OFFSET 325.0f
+#define SEA_LEVEL_PRESSURE 1024.2f // For Seattle 5/17
+#define TICKS_PER_G 12.0f // The difference in analog value for 1g
+#define ZERO_G_OFFSET 330.0f // The analog value corresponding to 0g
+#define Z_AXIS_OFFSET 6.0f // The Z axis is 6 higher than the X or Y axis
 #define ONE_SECOND 1000 // How many milliseconds per second
+#define DELAY 5000 // How long we wait between cycles (transmissions and data collection)
 
 // GPS uses Serial1
 #define GPS_BAUD 57600
@@ -151,6 +153,7 @@ void setup() {
     if (gpsTest())
     {
         Serial.println("#RocketName: TM4: GPS Test");
+        smartdelay(1000);
     }
     else
     {
@@ -162,7 +165,6 @@ void setup() {
 
 void loop() {
     unsigned long milli = millis();
-    smartdelay(1000);
     String accelerometer_data = getAccelData();
     String barometer_data = getBaromData();
     String gps_data = getGPSLocation() + ", " + getGPSSpeed();
@@ -173,6 +175,7 @@ void loop() {
     logData(barometer_data);
     //Serial.println(gps_data);
     logData(gps_data);
+    smartdelay(DELAY - (millis() - milli));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -262,7 +265,7 @@ int getRawAccelY ()
 ////////////////////////////////////////////////////////////////////////////////
 int getRawAccelZ ()
 {
-    return analogRead(ACCEL_Z);
+    return analogRead(ACCEL_Z) - Z_AXIS_OFFSET;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

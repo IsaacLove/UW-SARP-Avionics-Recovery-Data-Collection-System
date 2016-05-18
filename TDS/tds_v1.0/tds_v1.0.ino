@@ -39,10 +39,12 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #define SAMPLES 100 // Indicates the number of samples that the sensors should take.
-#define FILE_NAME "data.txt" // File Name @TODO: make this dynamic (time from data logger perhaps).
+#define BASE_NAME "ORDATA" // File Name @TODO: make this dynamic (time from data logger perhaps).
+#define EXTENSION ".txt"
 #define SEA_LEVEL_PRESSURE 1013.25
 #define TICKS_PER_G 25.0f // @TODO: Make these calibrated somehow
 #define ZERO_G_OFFSET 325.0f
+#define ONE_SECOND 1000 // How many milliseconds per second
 
 // GPS uses Serial1
 #define GPS_BAUD 57600
@@ -63,10 +65,10 @@
 #define MISO 50
 #define MOSI 51
 
-// Barometer / Altimeter, pins: @TODO: finalize pins
+// Barometer / Altimeter, pins:
 #define BMP183_SS  2  // Slave Select (CS)
 
-//  DataLogger, pins: @TODO: finalize pins
+//  DataLogger, pins:
 #define DATALOGGER_SS  3  // Slave Select (CS)
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -99,6 +101,9 @@ Adafruit_BMP183 bmp = Adafruit_BMP183(BMP183_SS);
 // GPS:
 TinyGPS gps;
 
+// Filename variable
+String file = "null";
+
 ////////////////////////////////////////////////////////////////////////////////
 // Setup
 //
@@ -129,6 +134,13 @@ void setup() {
     if (SD.begin(DATALOGGER_SS))
     {
         Serial.println("#RocketName: TM3: DataLogger Test");
+        int i = 1;
+        do
+        {
+            file = BASE_NAME + (String) i + EXTENSION;
+            i++;
+        } while (SD.exists(file));
+        Serial.println("#RocketName: Filename: " + file);
     }
     else
     {
@@ -155,9 +167,12 @@ void loop() {
     String barometer_data = getBaromData();
     String gps_data = getGPSLocation() + ", " + getGPSSpeed();
     //Serial.println("Millis: " + milli);
-    Serial.println(accelerometer_data);
-    Serial.println(barometer_data);
-    Serial.println(gps_data);
+    //Serial.println(accelerometer_data);
+    logData(accelerometer_data);
+    //Serial.println(barometer_data);
+    logData(barometer_data);
+    //Serial.println(gps_data);
+    logData(gps_data);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -167,9 +182,11 @@ void loop() {
 ////////////////////////////////////////////////////////////////////////////////
 void logData(String packet)
 {
+    String time_string = (String) (millis()/ONE_SECOND) + "s: ";
+    packet = time_string + packet;
     Serial.println(packet);
 
-    File dataFile = SD.open(FILE_NAME, FILE_WRITE);
+    File dataFile = SD.open(file, FILE_WRITE);
 
     if (dataFile)
     {
@@ -178,7 +195,7 @@ void logData(String packet)
     }
     else
     {
-        Serial.println("ERROR101: CANNOT ACCESS FILE: " + (String)FILE_NAME);
+        Serial.println("ERROR101: CANNOT ACCESS FILE: " + file);
     }
 }
 
@@ -292,9 +309,9 @@ String getGPSLocation ()
     unsigned long age;
 
     gps.f_get_position(&lat, &lon, &age);
-    Serial.println("----" + (String)lat);
-    Serial.println("----" + (String)lon);
-    Serial.println("----" + (String)age);
+    //Serial.println("----" + (String)lat);
+    //Serial.println("----" + (String)lon);
+    //Serial.println("----" + (String)age);
     return "Lat: " + (String)(lat) + ", " + "Long: " + (String)(lon) + ", " +
         "Age: " + (String)(age);
 }

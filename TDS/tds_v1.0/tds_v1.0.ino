@@ -33,6 +33,8 @@
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BMP183.h>
 #include <TinyGPS.h>
+#include <OneWire.h>
+#include <DallasTemperature.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 // Constants and Pin Numbers

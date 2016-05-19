@@ -40,8 +40,7 @@
 // Constants and Pin Numbers
 ////////////////////////////////////////////////////////////////////////////////
 
-#define SAMPLES 100 // Indicates the number of samples that the sensors should take.
-#define BASE_NAME "ORDATA" // File Name @TODO: make this dynamic (time from data logger perhaps).
+#define BASE_NAME "OR_DATA" // File Name @TODO: make this dynamic (time from data logger perhaps).
 #define EXTENSION ".txt"
 #define SEA_LEVEL_PRESSURE 1024.2f // For Seattle 5/17
 #define TICKS_PER_G 12.0f // The difference in analog value for 1g
@@ -58,6 +57,7 @@
 #define ACCEL_Y A1
 #define ACCEL_Z A0
 
+/*
 // Nosecone Temperature Sensor (DS18B20)
 #define TEMP_DQ_BUS 6 // @TODO: finalize pins
 
@@ -69,6 +69,7 @@ DallasTemperature sensors(&oneWire);
 
 // arrays to hold device address
 DeviceAddress insideThermometer;
+*/
 
 ////////////////////////////////////////////////////////////////////////////////
 // SPI devices:
@@ -117,6 +118,12 @@ TinyGPS gps;
 // Filename variable
 String file = "null";
 
+// Tracks Cycles
+int cycleCount = 10;
+
+// Cycle Num
+int cycleNum = 0;
+
 ////////////////////////////////////////////////////////////////////////////////
 // Setup
 //
@@ -126,11 +133,6 @@ String file = "null";
 void setup() {
 
     //Serial2.begin(MM_BAUD); // @TODO: This should be the micro modem baud rate;
-
-    //while (!Serial2) // Wait for Serial to finish setting up.
-    //{}
-
-    //Serial1.begin(GPS_BAUD); // @TODO: Get GPS working
 
     Serial.begin(9600); // Default serial communication with a computer over USB
     Serial.println("#RocketName: TM1: Serial/Radio Test");
@@ -160,35 +162,53 @@ void setup() {
         Serial.println("#RocketName: ERROR3: NO DATALOGGER DETECTED");
     }
 
-    Serial1.begin(GPS_BAUD); // GPS Baud rate
+    // Start GPS Serial and read initial data.
+    Serial1.begin(GPS_BAUD);
+    smartdelay(1000);
+    
     if (gpsTest())
     {
         Serial.println("#RocketName: TM4: GPS Test");
-        smartdelay(1000);
     }
     else
     {
         Serial.println("#RocketName: ERROR4: NO GPS DETECTED");
     }
 
-    temperatureSetup();
+    //temperatureSetup();
+    
+    // Start the MicroModem.
+    Serial2.begin(MM_BAUD);
+    setCallSign(callsign);
+    sendMessage(callsign + " signing on.");
 
     Serial.println("TDS is Online");
 }
 
-void loop() {
+void loop()
+{
+    cycleNum ++;
+    
     unsigned long milli = millis();
+    
     String accelerometer_data = getAccelData();
     String barometer_data = getBaromData();
     String gps_data = getGPSLocation() + ", " + getGPSSpeed();
-    //Serial.println("Millis: " + milli);
-    //Serial.println(accelerometer_data);
+    
     logData(accelerometer_data);
-    //Serial.println(barometer_data);
     logData(barometer_data);
-    //Serial.println(gps_data);
     logData(gps_data);
-
+    
+    if (cycleNum >= 10)
+    {
+        cycleNum = 0;
+        
+        sendMessage(accelerometer_data);
+        sendMessage(barometer_data);
+        sendMessage(gps_data);
+    }
+    
+    /*
     // call sensors.requestTemperatures() to issue a global temperature
     // request to all devices on the bus
     Serial.print("Requesting temperatures...");
@@ -197,7 +217,8 @@ void loop() {
 
     // It responds almost immediately. Let's print out the data
     String temperature_data = getTemperatureData(insideThermometer); // Use a simple function to print out the data
-
+    */
+    
     smartdelay(DELAY - (millis() - milli));
 }
 

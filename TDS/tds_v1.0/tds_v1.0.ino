@@ -40,9 +40,9 @@
 // Constants and Pin Numbers
 ////////////////////////////////////////////////////////////////////////////////
 
-#define BASE_NAME "OR_DATA" // File Name @TODO: make this dynamic (time from data logger perhaps).
+#define BASE_NAME "ORDATA" // File Name @TODO: make this dynamic (time from data logger perhaps).
 #define EXTENSION ".txt"
-#define SEA_LEVEL_PRESSURE 1024.2f // For Seattle 5/17
+#define SEA_LEVEL_PRESSURE 1012.2f // For Seattle 5/19
 #define TICKS_PER_G 12.0f // The difference in analog value for 1g
 #define ZERO_G_OFFSET 330.0f // The analog value corresponding to 0g
 #define Z_AXIS_OFFSET 6.0f // The Z axis is 6 higher than the X or Y axis
@@ -199,7 +199,7 @@ void loop()
     logData(barometer_data);
     logData(gps_data);
     
-    if (cycleNum >= 10)
+    if (cycleNum >= 3)
     {
         cycleNum = 0;
         
@@ -448,7 +448,7 @@ void setLongitude(String longitude)
 // One-Wire Temperature Sensor
 // Mounted in the Nosecone
 ////////////////////////////////////////////////////////////////////////////////
-
+/*
 void temperatureSetup() // @TODO: Make Serial messages toggleable
 {
     // locate devices on the bus
@@ -482,7 +482,8 @@ void temperatureSetup() // @TODO: Make Serial messages toggleable
     Serial.print(sensors.getResolution(insideThermometer), DEC);
     Serial.println();
 }
-
+*/
+/*
 // function to print the temperature for a device
 String getTemperatureData(DeviceAddress deviceAddress)
 {
@@ -508,3 +509,4 @@ void printAddress(DeviceAddress deviceAddress)
         Serial.print(deviceAddress[i], HEX);
     }
 }
+*/

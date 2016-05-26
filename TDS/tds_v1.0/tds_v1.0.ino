@@ -47,7 +47,7 @@
 #define ZERO_G_OFFSET 330.0f // The analog value corresponding to 0g
 #define Z_AXIS_OFFSET 6.0f // The Z axis is 6 higher than the X or Y axis
 #define ONE_SECOND 1000 // How many milliseconds per second
-#define DELAY 5000 // How long we wait between cycles (transmissions and data collection)
+#define DELAY 2500 // How long we wait between cycles (transmissions and data collection)
 
 // GPS uses Serial1
 #define GPS_BAUD 57600
@@ -57,9 +57,9 @@
 #define ACCEL_Y A1
 #define ACCEL_Z A0
 
-/*
+
 // Nosecone Temperature Sensor (DS18B20)
-#define TEMP_DQ_BUS 6 // @TODO: finalize pins
+#define TEMP_DQ_BUS 11
 
 // Setup a oneWire instance to communicate with any OneWire devices (not just Maxim/Dallas temperature ICs)
 OneWire oneWire(TEMP_DQ_BUS);
@@ -69,7 +69,7 @@ DallasTemperature sensors(&oneWire);
 
 // arrays to hold device address
 DeviceAddress insideThermometer;
-*/
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // SPI devices:
@@ -165,7 +165,7 @@ void setup() {
     // Start GPS Serial and read initial data.
     Serial1.begin(GPS_BAUD);
     smartdelay(1000);
-    
+
     if (gpsTest())
     {
         Serial.println("#RocketName: TM4: GPS Test");
@@ -175,50 +175,51 @@ void setup() {
         Serial.println("#RocketName: ERROR4: NO GPS DETECTED");
     }
 
-    //temperatureSetup();
-    
+    temperatureSetup();
+    /*
     // Start the MicroModem.
     Serial2.begin(MM_BAUD);
     setCallSign(callsign);
     sendMessage(callsign + " signing on.");
-
+    */
     Serial.println("TDS is Online");
 }
 
 void loop()
 {
     cycleNum ++;
-    
+
     unsigned long milli = millis();
-    
+
     String accelerometer_data = getAccelData();
     String barometer_data = getBaromData();
     String gps_data = getGPSLocation() + ", " + getGPSSpeed();
-    
+
     logData(accelerometer_data);
     logData(barometer_data);
     logData(gps_data);
-    
+
+    /*
     if (cycleNum >= 3)
     {
         cycleNum = 0;
-        
+
         sendMessage(accelerometer_data);
         sendMessage(barometer_data);
         sendMessage(gps_data);
     }
-    
-    /*
+    */
+
     // call sensors.requestTemperatures() to issue a global temperature
     // request to all devices on the bus
-    Serial.print("Requesting temperatures...");
+    //Serial.print("Requesting temperatures...");
     sensors.requestTemperatures(); // Send the command to get temperatures
-    Serial.println("DONE");
+    //Serial.println("DONE");
 
     // It responds almost immediately. Let's print out the data
     String temperature_data = getTemperatureData(insideThermometer); // Use a simple function to print out the data
-    */
-    
+    logData(temperature_data);
+
     smartdelay(DELAY - (millis() - milli));
 }
 
@@ -448,7 +449,7 @@ void setLongitude(String longitude)
 // One-Wire Temperature Sensor
 // Mounted in the Nosecone
 ////////////////////////////////////////////////////////////////////////////////
-/*
+
 void temperatureSetup() // @TODO: Make Serial messages toggleable
 {
     // locate devices on the bus
@@ -482,8 +483,8 @@ void temperatureSetup() // @TODO: Make Serial messages toggleable
     Serial.print(sensors.getResolution(insideThermometer), DEC);
     Serial.println();
 }
-*/
-/*
+
+
 // function to print the temperature for a device
 String getTemperatureData(DeviceAddress deviceAddress)
 {
@@ -495,9 +496,8 @@ String getTemperatureData(DeviceAddress deviceAddress)
 
     // method 2 - faster
     float tempC = sensors.getTempC(deviceAddress);
-    return "Temp C: " + (String) tempC;
-    //Serial.print(" Temp F: ");
-    //Serial.println(DallasTemperature::toFahrenheit(tempC)); // Converts tempC to Fahrenheit
+    float tempF = DallasTemperature::toFahrenheit(tempC);
+    return "TempC: " + (String) tempC + " TempF: " + (String) tempF;
 }
 
 // function to print a device address
@@ -509,4 +509,3 @@ void printAddress(DeviceAddress deviceAddress)
         Serial.print(deviceAddress[i], HEX);
     }
 }
-*/

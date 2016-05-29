@@ -42,7 +42,7 @@
 
 #define BASE_NAME "ORDATA" // File Name @TODO: make this dynamic (time from data logger perhaps).
 #define EXTENSION ".txt"
-#define SEA_LEVEL_PRESSURE 1012.2f // For Seattle 5/19
+#define SEA_LEVEL_PRESSURE 1019.64f // For Seattle 5/19
 #define TICKS_PER_G 12.0f // The difference in analog value for 1g
 #define ZERO_G_OFFSET 330.0f // The analog value corresponding to 0g
 #define Z_AXIS_OFFSET 6.0f // The Z axis is 6 higher than the X or Y axis

@@ -111,7 +111,7 @@ Yagi antenna on the 70 cm band to receive the MicroModem telemetry data as
 well as track the beacon's transmissions. We are using a Macbook as a ground
 station, connected to a [SignalLink USB by
 Tigertronics](http://www.tigertronics.com/slusbmain.htm) configured for a
-handheld [Baofeng UVB5](http://www.miklor.com/UVB5/UVB5-FAQ.php) as the
+handheld [Baofeng UVB5](http://www.miklor.com/UVB5) as the
 receiving radio. To decode and display the APRS location packets, we are using
 the [PocketPacket Mac Software](http://koomasi.com/pocketpacket-mac-os/). In
 order to decode the digital packets sent by the MicroModem, we are using the

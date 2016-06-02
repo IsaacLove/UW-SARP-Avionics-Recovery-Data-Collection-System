@@ -61,7 +61,7 @@ data to a ground station
 To locate the rocket efficiently, we are using of Amateur Radio equipment
 transmitting on the 2 meter and 70 centimeter bands. We are using the APRS
 protocol to send GPS location data on the standard US APRS frequency,
-144.390 MHz, since there are a large number of digipeaters to repeat the APRS
+144.390 MHz, since there are a large number of digipeaters to increase the range of the APRS
 signal, as well as add our rocket's location to online APRS maps. The call sign
 and SSID of the rocket is KI7AFR-2 and can be tracked online on [aprs.fi
 here](http://aprs.fi/#!mt=roadmap&z=11&call=a%2FKI7AFR-2&timerange=3600&tail=360

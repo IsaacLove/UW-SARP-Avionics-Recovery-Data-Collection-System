@@ -16,8 +16,7 @@ the internet where it can be tracked by anyone around the world.
 #### MicroModem
 
 On the 70 centimeter wavelength, we are using a MicroModem, an open-source
-wireless modem using an ATmega328p microprocessor. It is running the MicroAPRS
-SimpleSerial Firmware which enables it to communicate with another device using
-Serial and send digital messages using a connected handheld radio over any
-frequency. We are using the MicroModem to send redundant GPS data as well as
-in flight telemetry data.
+wireless modem using an ATmega328p microprocessor. It communicates over Serial
+with the Arduino gathering data, and transmits using a connected handheld radio
+over any frequency. We are using the MicroModem to send redundant GPS data as
+well as in-flight telemetry data.

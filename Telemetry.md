@@ -11,7 +11,7 @@ sends GPS longitude and latitude on the standard APRS frequency 144.390 MHz.
 We are using the APRS protocol because amateur operators maintain a large number
 of digipeaters which increase the range of the APRS signal, helping us to better
 locate our rocket. In addition, some of these digipeaters automatically upload
-the APRS data to the internet where it can be
+the APRS data to the Internet where it can be
 tracked by anyone around the world.
 
 #### MicroModem

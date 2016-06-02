@@ -54,20 +54,22 @@ microSD card to be analyzed using Hooke's Law after landing.
 ## Telemetry
 
 We are using the Amateur Radio bands to transmit the rockets location and
-data to a ground station
+data to a ground station located at the rocket launch site. To locate the rocket
+efficiently, we are using of Amateur Radio equipment
+transmitting on the 2 meter and 70 centimeter bands.
 
 #### APRS
 
-To locate the rocket efficiently, we are using of Amateur Radio equipment
-transmitting on the 2 meter and 70 centimeter bands. We are using the APRS
-protocol to send GPS location data on the standard US APRS frequency,
-144.390 MHz, since there are a large number of digipeaters to increase the range of the APRS
-signal, as well as add our rocket's location to online APRS maps. The call sign
-and SSID of the rocket is KI7AFR-2 and can be tracked online on [aprs.fi
-here](http://aprs.fi/#!mt=roadmap&z=11&call=a%2FKI7AFR-2&timerange=3600&tail=360
-0).
+We are using the APRS protocol to send GPS location data
+on the standard US APRS frequency,
+144.390 MHz, since there are a large number of digipeaters to increase the range
+of the APRS signal, as well as add our rocket's location to online APRS maps.
+The call sign and SSID of the rocket is KI7AFR-2 and can be tracked online on
+[aprs.fi
+here](http://aprs.fi/#!mt=roadmap&z=11&call=a%2FKI7AFR-2&timerange=3600&
+tail=3600).
 
-Our initial tracker is the [Byonics Micro-Trak All In
+Our APRS tracker is the [Byonics Micro-Trak All In
 One](http://www.byonics.com/mt-aio) which has a built in GPS and radio
 transmitter programmed to transmit at configurable rates on 144.39 MHz. In
 order to be more likely to have a last known location of the rocket in the
@@ -80,7 +82,7 @@ configuration software for the Micro-Trak.
 
 To transmit data in flight, we are using the MicroModem, a custom built
 component using an ATmega328p microprocessor. It is running the [MicroAPRS
-SimpleSerial 3.3V Firmware](http://unsigned.io/projects/microaprs/) takes
+SimpleSerial 3.3V Firmware](http://unsigned.io/projects/microaprs/) which takes
 commands over Serial and sends messages using a handheld radio in the rocket.
 The handheld radio we are using is the [Baofeng
 BF-888s](http://www.miklor.com/BF888/) and transmits on the 70 cm band. The

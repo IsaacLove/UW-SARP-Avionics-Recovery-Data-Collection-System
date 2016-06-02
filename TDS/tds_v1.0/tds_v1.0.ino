@@ -42,12 +42,12 @@
 
 #define BASE_NAME "ORDATA" // File Name @TODO: make this dynamic (time from data logger perhaps).
 #define EXTENSION ".txt"
-#define SEA_LEVEL_PRESSURE 1019.64f // For Seattle 5/19
+#define SEA_LEVEL_PRESSURE 1019.64f // For Brothers 5/28
 #define TICKS_PER_G 12.0f // The difference in analog value for 1g
 #define ZERO_G_OFFSET 330.0f // The analog value corresponding to 0g
 #define Z_AXIS_OFFSET 6.0f // The Z axis is 6 higher than the X or Y axis
 #define ONE_SECOND 1000 // How many milliseconds per second
-#define DELAY 2500 // How long we wait between cycles (transmissions and data collection)
+#define DELAY 200 // How long we wait between cycles (transmissions and data collection)
 
 // GPS uses Serial1
 #define GPS_BAUD 57600
